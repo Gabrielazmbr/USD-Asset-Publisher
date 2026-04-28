@@ -1,7 +1,7 @@
 [project]
 name = "houdini-usd-publisher"
 version = "0.1.0"
-description = "Add your description here"
+description = "USD asset publisher for Houdini"
 readme = "README.md"
 authors = [
     { name = "gabrielazmbr", email = "gabrielazmbr@gmail.com" }
@@ -10,8 +10,16 @@ requires-python = ">=3.13"
 dependencies = []
 
 [project.scripts]
-houdini-usd-publisher = "houdini_usd_publisher:main"
+publish = "houdini_usd_publisher.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [build-system]
 requires = ["uv_build>=0.9.17,<0.10.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]

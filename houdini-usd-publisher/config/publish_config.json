@@ -1,0 +1,10 @@
+{
+  "export_format": "usda",
+  "assets_root": "assets",
+  "variants": {
+    "lod": ["low", "mid", "high"]
+  },
+  "metadata": {
+    "required_fields": ["asset_name", "version"]
+  }
+}

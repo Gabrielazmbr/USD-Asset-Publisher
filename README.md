@@ -1,136 +1,200 @@
 # Houdini USD Asset Publisher
 
-For this project I want to explore USD assets, their benefits, their improvement opportunities and their relevance in the industry. In accordance to this I want to achieve a Pipeline TD tool for publishing procedurally generated Houdini assets as correctly structured USD files, following industry-standard conventions for layers, variants, payloads, and metadata.
+## Overview
+
+This project explores the practical use of USD (Universal Scene Description) in a production context by developing a pipeline-oriented publishing tool inside Houdini.
+
+The tool focuses on **validating, structuring, and publishing USD assets**. It acts as a pipeline layer on top of Houdini’s native USD workflows, ensuring that assets are consistent, correctly structured, and ready for downstream use.
+
+The system combines Houdini’s LOP-based USD authoring with low-level inspection using OpenUSD (`pxr.Usd`), bridging artist workflows and pipeline validation.
 
 ---
 
-## Project Overview
+## Core Concept
 
-This tool is meant to live inside Houdini as a Python shelf tool / PyQt panel and allows an artist to publish any Houdini geometry or HDA as a production ready USD asset with a single click. The tool automates the assembly of a USD layer stack that would otherwise require significant manual setup, ensuring consistency across an asset library.
 
----
+```
+[ Artist builds asset in Houdini ]
+            ↓
+[ Publish Tool Trigger ]
+            ↓
+[ USD Export via Houdini ]
+            ↓
+[ Load USD with OpenUSD (pxr.Usd) ]
+            ↓
+[ Run Validation Rules (config-driven) ]
+            ↓
+[ If valid → Package and publish asset ]
+[ If invalid → Report errors and block publish ]
+```
 
-## Intended Features
-
-- Export Houdini geometry as a structured USD asset with separate layers:
-  - `payload.usda` — geometry, subsetted and ready to be loaded on demand
-  - `materials.usda` — material bindings (stubbed for extension)
-  - `asset.usda` — top-level assembly file that references payload and materials
-- Automatic **variant set** generation (e.g. LOD: `low`, `mid`, `high`)
-- Correct **payload arcs** so assets can be referenced into shots without loading geometry immediately
-- **Metadata** baked into the root prim: asset name, author, version, publish date
-- PyQt UI panel inside Houdini for artist-friendly publishing
-- Validation step before export. Checks naming conventions, required prim paths, and material binding presence
-- CLI publishing script for headless / farm use
-
----
-
-## Technology
-
-| Tool | Purpose |
-|------|---------|
-| Houdini 21.x (LOPs) | Source DCC and USD authoring environment |
-| Python 3.10+ | Tool scripting |
-| `pxr.Usd` (OpenUSD) | USD layer and stage authoring |
-| PyQt | Houdini panel UI |
-| pytest | Test-driven development and validation tests |
-| Houdini Package | Deployment / installation |
+This aims to reflect real-world pipelines, where DCCs generate data and pipeline tools enforce and adequate structure and consistency according to specific needs.
 
 ---
 
-## USD Structure Idea
+## Goals
 
-A published asset produces the following file structure:
+* Develop a **Pipeline tool** for USD asset publishing
+* Enforce **consistent USD structure and conventions**
+* Implement a **rules-based validation system** configurable per project
+* Bridge **Houdini Solaris workflows** with **OpenUSD inspection**
+* Provide both **interactive (UI)** and **automated (CLI)** publishing
+
+---
+
+## Key Features
+
+### 1. Validation-Driven Publishing
+
+Assets are validated before publishing using a configurable rule system:
+
+* Stage integrity (e.g. `defaultPrim`, stage validity)
+* Prim hierarchy and structure
+* Variant sets (e.g. LOD)
+* Metadata presence
+* Basic material binding checks
+
+Validation results are categorized as:
+
+* **Error** : blocks publishing
+* **Warning** : allows publishing with feedback
+
+---
+
+### 2. Rules-Based Configuration
+
+Publishing behavior is driven by a configuration file:
+
+```
+config/publish_config.json
+```
+
+This allows:
+
+* different asset structures per project
+* customizable validation rules
+* flexible variant definitions
+
+Example (simplified):
+
+```json
+{
+  "variants": {
+    "lod": ["low", "mid", "high"]
+  },
+  "metadata": {
+    "required_fields": ["asset_name", "version"]
+  }
+}
+```
+
+Main Reference for my validation rules system: https://github.com/usd-wg/assets/blob/main/docs/asset-structure-guidelines.md 
+
+---
+
+### 3. Structured USD Packaging
+
+Validated assets are published into a consistent structure like this one:
 
 ```
 assets/
 └── <asset_name>/
     └── v001/
-        ├── asset.usda          ← top-level assembly (references payload + materials)
-        ├── payload.usda        ← geometry payload
-        └── materials.usda      ← material layer (stubbed)
+        ├── asset.usda
+        ├── payload.usda
+        └── materials.usda
 ```
 
-Example `asset.usda`:
+This separation follows USD best practices:
 
-```usda
-#usda 1.0
-(
-    defaultPrim = "AssetName"
-    upAxis = "Y"
-    customLayerData = {
-        string asset_name = "AssetName"
-        string author = "artist"
-        string version = "v001"
-    }
-)
+* **asset.usda** : top-level composition
+* **payload.usda** : geometry (load-on-demand)
+* **materials.usda** : shading data
 
-def Xform "AssetName" (
-    kind = "component"
-    variants = {
-        string lod = "mid"
-    }
-    variantSets = ["lod"]
-    payload = @./payload.usda@</AssetName>
-)
-{
-    variantSet "lod" = {
-        "low"  { ... }
-        "mid"  { ... }
-        "high" { ... }
-    }
-}
+
+Main Reference for my USD structure system: https://github.com/usd-wg/assets/blob/main/docs/asset-structure-guidelines.md 
+
+---
+
+### 4. Houdini + OpenUSD Integration
+
+* Houdini (LOPs) is used to **author and export USD**
+* OpenUSD (`pxr.Usd`) is used to:
+
+  * inspect stages
+  * validate structure
+  * enforce pipeline rules
+
+
+---
+
+### 5. CLI and UI Support
+
+* **CLI (`publish.py`)**
+  Enables automated publishing and testing:
+
+  ```bash
+  hython publish.py --asset tree --version v001
+  ```
+
+* **Houdini UI Panel**
+  Provides an artist-friendly interface for publishing and validation feedback
+
+---
+
+## Project Structure
+
+```
+houdini-usd-publisher/
+├── python/usd_publisher/
+│   ├── core/           ← pipeline orchestration (export, package, config)
+│   ├── validation/     ← rule-based validation system
+│   ├── usd/            ← OpenUSD helpers (stage inspection)
+│   ├── ui/             ← Houdini panel
+│   └── utils/
+│
+├── config/
+│   └── publish_config.json
+│
+├── tests/
+│   └── fixtures/
+│
+├── publish.py          ← CLI entry point
+└── package/            ← Houdini package definition
 ```
 
 ---
 
 ## Testing
 
-Tests are written with `pytest` and cover:
+Tests are written using `pytest` and executed with Houdini’s Python environment:
 
-- USD output structure validation (correct prim paths, layer references, payload arcs)
-- Variant set presence and switchability
-- Metadata correctness
-- Naming convention enforcement
-- CLI argument handling
+```bash
+hython -m pytest
+```
+
+Testing focuses on:
+
+* validation rules
+* USD structure correctness
+* pipeline flow
+
+Using `hython` ensures compatibility with Houdini’s USD environment.
 
 ---
 
-## Project Initial Structure Development
+## Design Principles
 
-```
-houdini-usd-publisher/
-├── package/
-│   └── usd_publisher.json      ← Houdini package definition
-├── python/
-│   ├── publisher/
-│   │   ├── __init__.py
-│   │   ├── exporter.py         ← USD layer assembly logic
-│   │   ├── validator.py        ← pre-publish validation rules
-│   │   └── metadata.py         ← metadata schema
-│   └── ui/
-│       └── panel.py            ← PyQt5 Houdini panel
-├── shelf/
-│   └── usd_publisher.shelf     ← Houdini shelf tool definition
-├── tests/
-│   ├── test_exporter.py
-│   ├── test_validator.py
-│   └── fixtures/
-├── publish.py                  ← CLI entry point
-├── README.md
-└── docs/
-    └── design.md               ← pipeline design document
-```
+* **Validation**
+  The tool does not replace Houdini’s USD system, but enforces correctness on top of it.
+
+* **Separation of concerns**
+  Export, validation, and packaging are independent modules.
+
+* **Configurable**
+  Rules and structure are driven by external configuration.
+
+* **Pipeline-oriented thinking**
+  Designed to simulate real workflows.
 
 ---
-
-## Assessment Checklist
-
-| Criteria | Implementation |
-|-----------|---------------|
-| Test Driven Development | `pytest` suite covering all publish and validation logic |
-| Design of solution | USD layer stack design documented in `docs/design.md` |
-| Development with suitable tools | Houdini - OpenUSD - PyQt5 |
-| Documentation | README - inline docstrings - design doc |
-| Deployment | Houdini Package - single file copy, no manual setup |
-
