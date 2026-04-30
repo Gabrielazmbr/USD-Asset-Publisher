@@ -25,6 +25,7 @@ class PublishConfig:
             raise ConfigError(f"Invalid JSON in config: {e}") from e
 
     @property
+    # export formats - default usda
     def export_format(self) -> str:
         return self._data.get("export_format", "usda")
 
@@ -33,9 +34,11 @@ class PublishConfig:
         return self._data.get("assets_root", "assets")
 
     @property
+    # load variants - low / mid / high
     def required_lod_variants(self) -> list[str]:
         return self._data.get("variants", {}).get("lod", [])
 
     @property
+    # metadata for name and version
     def required_metadata_fields(self) -> list[str]:
         return self._data.get("metadata", {}).get("required_fields", [])
