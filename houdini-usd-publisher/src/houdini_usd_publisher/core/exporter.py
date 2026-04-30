@@ -30,7 +30,6 @@ class USDExporter:
         try:
             rop.parm("loppath").set(lop_node_path)
             rop.parm("lopoutput").set(str(output))
-            rop.parm("usdformat").set(self.config.export_format)
             rop.parm("execute").pressButton()
         except hou.Error as e:
             raise ExportError(f"Houdini export failed: {e}") from e
