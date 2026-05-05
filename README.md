@@ -198,3 +198,10 @@ Using `hython` ensures compatibility with Houdini’s USD environment.
   Designed to simulate real workflows.
 
 ---
+
+## Requirements
+- Houdini (Solaris / LOPs)
+- Python (bundled with Houdini)
+
+
+---

@@ -8,6 +8,10 @@ class ConfigError(Exception):
 
 
 class PublishConfig:
+    """
+    Acts as global settings loader. Reads a JSON config file and provides access to settings.
+    """
+
     def __init__(self, config_path: str | Path):
         self._path = Path(config_path)
         self._data = self._load()
@@ -42,3 +46,8 @@ class PublishConfig:
     # metadata for name and version
     def required_metadata_fields(self) -> list[str]:
         return self._data.get("metadata", {}).get("required_fields", [])
+
+    @property
+    # metadata for variant set names.
+    def required_variant_sets(self) -> list[str]:
+        return list(self._data.get("variants", {}).keys())

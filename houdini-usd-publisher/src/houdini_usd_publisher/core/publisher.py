@@ -4,10 +4,17 @@ from pathlib import Path
 from houdini_usd_publisher.core.config import PublishConfig
 from houdini_usd_publisher.core.exporter import ExportError, USDExporter
 from houdini_usd_publisher.core.packager import PackageError, USDPackager
+from houdini_usd_publisher.validation.default_prim import DefaultPrimValidator
+from houdini_usd_publisher.validation.metadata import MetadataValidator
+from houdini_usd_publisher.validation.variant_set import VariantSetValidator
 
 
 @dataclass
 class PublishResult:
+    """
+    Represents the result of a publish operation.
+    """
+
     success: bool
     asset_name: str
     version: str
@@ -16,7 +23,9 @@ class PublishResult:
     warnings: list[str] = field(default_factory=list)
 
     def summary(self) -> str:
-        lines = [f"{'OK' if self.success else 'FAILED'} — {self.asset_name} {self.version}"]
+        lines = [
+            f"{'OK' if self.success else 'FAILED'} — {self.asset_name} {self.version}"
+        ]
         for e in self.errors:
             lines.append(f"  ERROR   {e}")
         for w in self.warnings:
@@ -27,12 +36,21 @@ class PublishResult:
 
 
 class Publisher:
+    """
+    Manages the publishing process for USD assets.
+    """
+
     def __init__(self, config: PublishConfig, publish_root: str | Path):
         self.config = config
         self.publish_root = Path(publish_root)
         self.exporter = USDExporter(config)
         self.packager = USDPackager(config)
         self._validators: list = []
+        self._validators = [
+            DefaultPrimValidator(),
+            MetadataValidator(config),
+            VariantSetValidator(config),
+        ]
 
     def add_validator(self, validator) -> None:
         self._validators.append(validator)
@@ -43,6 +61,7 @@ class Publisher:
         asset_name: str,
         version: str,
         tmp_dir: str | Path,
+        dry_run: bool = False,
     ) -> PublishResult:
         result = PublishResult(success=False, asset_name=asset_name, version=version)
 
@@ -65,6 +84,12 @@ class Publisher:
         result.warnings = all_warnings
         if all_errors:
             result.errors = all_errors
+            return result
+
+        # Intercept dry run - skip packaging
+        if dry_run:
+            result.success = True
+            result.published_path = None
             return result
 
         # 3. Package

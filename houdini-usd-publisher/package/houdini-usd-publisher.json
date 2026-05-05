@@ -1,0 +1,13 @@
+{
+  "env": [
+    {
+      "PYTHONPATH": {
+        "value": "/your/path/to/houdini-usd-publisher/src",
+        "method": "prepend"
+      }
+    },
+    {
+      "USD_PUBLISHER_ROOT": "/your/path/to/houdini-usd-publisher"
+    }
+  ]
+}

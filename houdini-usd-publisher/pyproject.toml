@@ -7,7 +7,10 @@ authors = [
     { name = "gabrielazmbr", email = "gabrielazmbr@gmail.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "pyside6>=6.11.0",
+    "usd-core>=26.5",
+]
 
 [project.scripts]
 publish = "houdini_usd_publisher.cli:main"

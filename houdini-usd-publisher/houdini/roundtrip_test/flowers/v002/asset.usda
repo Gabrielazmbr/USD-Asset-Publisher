@@ -1,0 +1,41 @@
+#usda 1.0
+(
+    defaultPrim = "World"
+    endTimeCode = 1
+    framesPerSecond = 24
+    metersPerUnit = 1
+    startTimeCode = 1
+    timeCodesPerSecond = 24
+    upAxis = "Y"
+)
+
+def Xform "World" (
+    customData = {
+        string asset_name = "tree"
+        string version = "v001"
+    }
+    kind = "group"
+    variants = {
+        string lod = "mid"
+    }
+    prepend variantSets = "lod"
+)
+{
+    def Xform "Geo" (
+        kind = "component"
+    )
+    {
+    }
+    variantSet "lod" = {
+        "high" {
+
+        }
+        "low" {
+
+        }
+        "mid" {
+
+        }
+    }
+}
+
