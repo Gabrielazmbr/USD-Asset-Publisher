@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment
+.venv/
+venv/
+
+# uv
+.uv/
+
+# pytest
+.pytest_cache/
+.coverage
+
+# Distribution
+dist/
+build/
+*.egg-info/
+
+# Published assets (local output, not source)
+assets/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Houdini
+*.hip.bak
+*.hipnc.bak

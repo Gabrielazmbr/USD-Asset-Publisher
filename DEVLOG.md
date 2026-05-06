@@ -39,11 +39,19 @@ Added a CLI entry point - Parse Arguments, load config and Publisher, added dry-
 
  - Made a Houdni panel with Pyside2 and 6 for compatibility. Used a Dummy panel for preview and development.
  - Created an environment variable for root path. Added a browse button to let the user customize the export route. 
+ - Created Provisional Deployment instructions:
 
-### 1. Provisional Deployment instructions: 
+### 1. Launch: 
 -   Launch Houdini
 -   Open houdini project: houdini-usd-publisher/houdini/project_test_file/python_tool_test.hipnc
 -   Switch to Stage Network
+
+### 2. Add Project to Python Path
+-   In Houdini: Windows > Python Panel Editor
+-   Click 'New Interface', and name it 'usd_publisher', label it 'USD Publisher'
+-   Paste the contents of panel.py into the Script tab
+-   Click 'Apply'
+-   Go to Pane Tab Menu, add 'USD Publisher' to Pane Tab Menu Entries.
 
 ### 2. Add Project to Python Path
 
