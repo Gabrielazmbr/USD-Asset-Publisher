@@ -46,14 +46,14 @@ Added a CLI entry point - Parse Arguments, load config and Publisher, added dry-
 -   Open houdini project: houdini-usd-publisher/houdini/project_test_file/python_tool_test.hipnc
 -   Switch to Stage Network
 
-### 2. Add Project to Python Path
+### 2. Add a Python Panel
 -   In Houdini: Windows > Python Panel Editor
 -   Click 'New Interface', and name it 'usd_publisher', label it 'USD Publisher'
 -   Paste the contents of panel.py into the Script tab
 -   Click 'Apply'
 -   Go to Pane Tab Menu, add 'USD Publisher' to Pane Tab Menu Entries.
 
-### 2. Add Project to Python Path
+### 3. Point Project Path
 
 -   Open Python Shell and run:
 
@@ -64,7 +64,7 @@ sys.path.insert(0, "/path/to/houdini-usd-publisher/src")
 os.environ["USD_PUBLISHER_ROOT"] = "/path/to/houdini-usd-publisher"
 ```
 
-### 3. Add Project to Python Path
+### 4. Test Tool
 -   Add new tab: New Pane tab type > USD Publisher
 -   Fill required fields for Asset Name, Version and LOP Node.
 -   Browse a root to publish your files.
