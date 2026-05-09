@@ -39,21 +39,13 @@ Added a CLI entry point - Parse Arguments, load config and Publisher, added dry-
 
  - Made a Houdni panel with Pyside2 and 6 for compatibility. Used a Dummy panel for preview and development.
  - Created an environment variable for root path. Added a browse button to let the user customize the export route. 
- - Created Provisional Deployment instructions:
 
-### 1. Launch: 
+### 1. Provisional Deployment instructions: 
 -   Launch Houdini
 -   Open houdini project: houdini-usd-publisher/houdini/project_test_file/python_tool_test.hipnc
 -   Switch to Stage Network
 
-### 2. Add a Python Panel
--   In Houdini: Windows > Python Panel Editor
--   Click 'New Interface', and name it 'usd_publisher', label it 'USD Publisher'
--   Paste the contents of panel.py into the Script tab
--   Click 'Apply'
--   Go to Pane Tab Menu, add 'USD Publisher' to Pane Tab Menu Entries.
-
-### 3. Point Project Path
+### 2. Add Project to Python Path
 
 -   Open Python Shell and run:
 
@@ -64,9 +56,19 @@ sys.path.insert(0, "/path/to/houdini-usd-publisher/src")
 os.environ["USD_PUBLISHER_ROOT"] = "/path/to/houdini-usd-publisher"
 ```
 
-### 4. Test Tool
+### 3. Add Project to Python Path
 -   Add new tab: New Pane tab type > USD Publisher
 -   Fill required fields for Asset Name, Version and LOP Node.
 -   Browse a root to publish your files.
 -   Dry-run the publisher to validate your settings before publishing.
 -   Publish your files.
+
+
+Next Steps:
+1. MongoDB registry: class requirement.
+2. Scene testing: Pixar Kitchen Set, stress test existing validators, also try Houdini raw file.
+3. Additional validators: informed by what the scene exposed
+4. Auto-fix: both the fix() method and UI integration
+5. Package installer: using installHouPackage as reference
+6. README: final deployment
+7. Possible additional features like Maya implementation of the tool.
