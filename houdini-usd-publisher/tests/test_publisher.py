@@ -5,8 +5,6 @@ import pytest
 from houdini_usd_publisher.core.config import PublishConfig
 from houdini_usd_publisher.core.publisher import Publisher, PublishResult
 
-CONFIG_PATH = Path(__file__).parent.parent / "config" / "publish_config.json"
-
 
 @pytest.fixture
 def publish_root(tmp_path):
@@ -14,10 +12,10 @@ def publish_root(tmp_path):
 
 
 @pytest.fixture
-def publisher(tmp_path, publish_root):
-    config = PublishConfig(CONFIG_PATH)
-    return Publisher(config, publish_root=publish_root)
-
+def publisher(tmp_path, publish_root, fresh_config):
+    from houdini_usd_publisher.core.config import PublishConfig
+    config = PublishConfig(fresh_config)
+    return Publisher(config, publish_root=publish_root, use_registry=False)
 
 # Export failure
 
@@ -67,9 +65,10 @@ def real_exported_file(tmp_path):
 
 
 @pytest.fixture
-def publisher_with_real_export(tmp_path, publish_root, monkeypatch):
-    config = PublishConfig(CONFIG_PATH)
-    p = Publisher(config, publish_root=publish_root)
+def publisher_with_real_export(tmp_path, publish_root, monkeypatch, fresh_config):
+    from houdini_usd_publisher.core.config import PublishConfig
+    config = PublishConfig(fresh_config)
+    p = Publisher(config, publish_root=publish_root, use_registry=False)
 
     fake_file = tmp_path / "tree_v001_tmp.usda"
     fake_file.write_text("""\
@@ -79,6 +78,7 @@ def publisher_with_real_export(tmp_path, publish_root, monkeypatch):
 )
 
 def Xform "Asset" (
+    kind = "component"
     customData = {
         string asset_name = "tree"
         string version = "v001"

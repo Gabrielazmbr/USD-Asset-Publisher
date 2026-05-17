@@ -1,4 +1,5 @@
 {
+  "_comment": "This is a template. Run install.py to generate the real package file in Houdini preferences folder.",
   "env": [
     {
       "PYTHONPATH": {

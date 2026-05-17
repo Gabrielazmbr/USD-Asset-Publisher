@@ -1,17 +1,12 @@
 from pathlib import Path
-
 import pytest
-
 from houdini_usd_publisher.core.config import PublishConfig
 from houdini_usd_publisher.validation.variant_set import VariantSetValidator
 
-CONFIG_PATH = Path(__file__).parent.parent.parent / "config" / "publish_config.json"
-
 
 @pytest.fixture
-def validator():
-    return VariantSetValidator(PublishConfig(CONFIG_PATH))
-
+def validator(fresh_config):
+    return VariantSetValidator(PublishConfig(fresh_config))
 
 @pytest.fixture
 def usda_no_default_prim(tmp_path) -> Path:

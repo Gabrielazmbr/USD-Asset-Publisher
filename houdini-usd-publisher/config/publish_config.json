@@ -1,10 +1,64 @@
 {
+  "studio": "YourStudio",
+  "pipeline_version": "1.0",
   "export_format": "usda",
   "assets_root": "assets",
-  "variants": {
-    "lod": ["low", "mid", "high"]
-  },
-  "metadata": {
-    "required_fields": ["asset_name", "version"]
+  "validators": {
+    "DefaultPrimValidator": {
+      "enabled": true,
+      "auto_fix": true
+    },
+    "MetadataValidator": {
+      "enabled": false,
+      "auto_fix": false,
+      "required_fields": [
+        "asset_name",
+        "version"
+      ]
+    },
+    "VariantSetValidator": {
+      "enabled": false,
+      "required_sets": {
+        "lod": [
+          "low",
+          "mid",
+          "high"
+        ],
+        "shading": [
+          "base",
+          "damaged"
+        ],
+        "geo": [
+          "proxy render"
+        ],
+        "Geometry": [
+          "Pig"
+        ],
+        "Material": [
+          "copper"
+        ]
+      }
+    },
+    "KindValidator": {
+      "enabled": false,
+      "auto_fix": false
+    },
+    "MaterialValidator": {
+      "enabled": false
+    },
+    "UpAxisValidator": {
+      "enabled": false,
+      "auto_fix": false,
+      "expected_axis": "Y"
+    },
+    "FileReferenceValidator": {
+      "enabled": false
+    },
+    "NamingConventionValidator": {
+      "enabled": false,
+      "allow_special_chars": false,
+      "naming_style": "any",
+      "instance_suffix_pattern": "_[0-9]+"
+    }
   }
 }

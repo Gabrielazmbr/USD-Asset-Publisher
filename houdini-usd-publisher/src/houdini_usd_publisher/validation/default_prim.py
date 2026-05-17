@@ -1,11 +1,10 @@
 from pathlib import Path
-
 from pxr import Usd
-
 from houdini_usd_publisher.validation.base import BaseValidator
 
 
 class DefaultPrimValidator(BaseValidator):
+
     def validate(self, usd_file: Path) -> tuple[list[str], list[str]]:
         errors = []
         warnings = []
@@ -23,3 +22,32 @@ class DefaultPrimValidator(BaseValidator):
             )
 
         return errors, warnings
+
+    def fix(self, usd_file: Path, **kwargs) -> list[str]:
+        """
+        Auto-fix: set defaultPrim to the first root-level prim if missing.
+        Returns a list of fix descriptions applied.
+        """
+        fixes = []
+
+        stage = Usd.Stage.Open(str(usd_file))
+        if not stage:
+            return fixes
+
+        # Already set — nothing to fix
+        if stage.GetDefaultPrim().IsValid():
+            return fixes
+
+        # Find first root-level prim
+        root_prims = stage.GetPseudoRoot().GetChildren()
+        if not root_prims:
+            return fixes
+
+        first_prim = root_prims[0]
+        stage.SetDefaultPrim(first_prim)
+        stage.GetRootLayer().Save()
+
+        fixes.append(
+            f"defaultPrim set to '{first_prim.GetName()}'"
+        )
+        return fixes

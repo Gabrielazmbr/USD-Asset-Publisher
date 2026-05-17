@@ -54,6 +54,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Validation only — does not package or write to publish root",
     )
+    parser.add_argument(
+        "--auto-fix",
+        action="store_true",
+        help="Automatically fix correctable validation errors before publishing",
+    )
     return parser.parse_args()
 
 
@@ -83,6 +88,8 @@ def main() -> int:
             asset_name=args.asset,
             version=args.version,
             tmp_dir=tmp,
+            dry_run=args.dry_run,
+            auto_fix=args.auto_fix,
         )
 
     if args.dry_run:

@@ -5,12 +5,9 @@ import pytest
 from houdini_usd_publisher.core.config import PublishConfig
 from houdini_usd_publisher.validation.metadata import MetadataValidator
 
-CONFIG_PATH = Path(__file__).parent.parent.parent / "config" / "publish_config.json"
-
-
 @pytest.fixture
-def validator():
-    return MetadataValidator(PublishConfig(CONFIG_PATH))
+def validator(fresh_config):
+    return MetadataValidator(PublishConfig(fresh_config))
 
 
 @pytest.fixture

@@ -1,7 +1,14 @@
+import os
+from pathlib import Path
+
+# Set project root for standalone mode
+os.environ["USD_PUBLISHER_ROOT"] = str(Path(__file__).parent.parent.parent.parent)
+
 import sys
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
 
 from PySide6 import QtWidgets
 

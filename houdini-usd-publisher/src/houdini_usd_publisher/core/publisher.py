@@ -7,25 +7,29 @@ from houdini_usd_publisher.core.packager import PackageError, USDPackager
 from houdini_usd_publisher.validation.default_prim import DefaultPrimValidator
 from houdini_usd_publisher.validation.metadata import MetadataValidator
 from houdini_usd_publisher.validation.variant_set import VariantSetValidator
+from houdini_usd_publisher.validation.kind import KindValidator
+from houdini_usd_publisher.validation.material import MaterialValidator
+from houdini_usd_publisher.validation.up_axis import UpAxisValidator
+from houdini_usd_publisher.validation.file_reference import FileReferenceValidator
+from houdini_usd_publisher.validation.naming import NamingConventionValidator
+from houdini_usd_publisher.core.registry import PublishRegistry
+from houdini_usd_publisher.core.report import PublishReport
 
 
 @dataclass
 class PublishResult:
-    """
-    Represents the result of a publish operation.
-    """
-
     success: bool
     asset_name: str
     version: str
     published_path: Path | None = None
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    fixes: list[str] = field(default_factory=list)
 
     def summary(self) -> str:
-        lines = [
-            f"{'OK' if self.success else 'FAILED'} — {self.asset_name} {self.version}"
-        ]
+        lines = [f"{'OK' if self.success else 'FAILED'} — {self.asset_name} {self.version}"]
+        for f in self.fixes:
+            lines.append(f"  FIXED   {f}")
         for e in self.errors:
             lines.append(f"  ERROR   {e}")
         for w in self.warnings:
@@ -35,22 +39,46 @@ class PublishResult:
         return "\n".join(lines)
 
 
+# Registry of all available validators
+_VALIDATOR_REGISTRY = {
+    "DefaultPrimValidator": lambda config: DefaultPrimValidator(),
+    "MetadataValidator": lambda config: MetadataValidator(config),
+    "VariantSetValidator": lambda config: VariantSetValidator(config),
+    "KindValidator": lambda config: KindValidator(),
+    "MaterialValidator": lambda config: MaterialValidator(),
+    "UpAxisValidator": lambda config: UpAxisValidator(config),
+    "FileReferenceValidator": lambda config: FileReferenceValidator(),
+    "NamingConventionValidator": lambda config: NamingConventionValidator(config),
+}
+
 class Publisher:
     """
     Manages the publishing process for USD assets.
     """
 
-    def __init__(self, config: PublishConfig, publish_root: str | Path):
+    def __init__(
+        self,
+        config: PublishConfig,
+        publish_root: str | Path,
+        use_registry: bool = True,
+    ):
         self.config = config
         self.publish_root = Path(publish_root)
         self.exporter = USDExporter(config)
         self.packager = USDPackager(config)
-        self._validators: list = []
-        self._validators = [
-            DefaultPrimValidator(),
-            MetadataValidator(config),
-            VariantSetValidator(config),
-        ]
+        self.registry = PublishRegistry() if use_registry else None
+        self._validators = self._build_validators()
+        self.report = PublishReport()
+
+    def _build_validators(self) -> list:
+        """Instantiate validators based on config — only enabled ones."""
+        validators = []
+        for name in self.config.enabled_validators:
+            if name in _VALIDATOR_REGISTRY:
+                validators.append(_VALIDATOR_REGISTRY[name](self.config))
+            else:
+                print(f"Warning: unknown validator '{name}' in config — skipping")
+        return validators
 
     def add_validator(self, validator) -> None:
         self._validators.append(validator)
@@ -62,6 +90,7 @@ class Publisher:
         version: str,
         tmp_dir: str | Path,
         dry_run: bool = False,
+        auto_fix: bool = False,
     ) -> PublishResult:
         result = PublishResult(success=False, asset_name=asset_name, version=version)
 
@@ -72,6 +101,18 @@ class Publisher:
         except ExportError as e:
             result.errors.append(f"Export: {e}")
             return result
+
+        # Auto-fix pass — runs before validation
+        if auto_fix:
+            for validator in self._validators:
+                name = validator.__class__.__name__
+                if hasattr(validator, "fix") and self.config.is_auto_fix_enabled(name):
+                    fixes = validator.fix(
+                        exported,
+                        asset_name=asset_name,
+                        version=version
+                    )
+                    result.fixes.extend(fixes)
 
         # 2. Validate
         all_errors: list[str] = []
@@ -106,4 +147,32 @@ class Publisher:
 
         result.success = True
         result.published_path = published
+
+        validator_names = [v.__class__.__name__ for v in self._validators]
+
+        # Record to registry
+        registry_recorded = False
+        if self.registry:
+            registry_recorded = self.registry.record(
+                asset_name=asset_name,
+                version=version,
+                published_path=published,
+                validators_run=validator_names,
+                warnings=all_warnings,
+                dry_run=False,
+            )
+
+        # Write local report
+        self.report.write(
+            asset_dir=published.parent,
+            asset_name=asset_name,
+            version=version,
+            published_path=published,
+            validators_run=validator_names,
+            warnings=all_warnings,
+            fixes=result.fixes,
+            registry_recorded=registry_recorded,
+            success=True,
+        )
+
         return result
