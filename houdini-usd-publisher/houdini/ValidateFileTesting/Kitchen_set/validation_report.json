@@ -1,0 +1,22 @@
+{
+  "validated_file": "/Users/gabrielazambrano/Desktop/MSC_CAVE/SEMESTER_02/PIPELINE_TD/FINAL_PROJECT/pipelineproject-Gabrielazmbr/houdini-usd-publisher/houdini/ValidateFileTesting/Kitchen_set/Kitchen_set.usd",
+  "validated_at": "2026-05-18T11:05:12.772199+00:00",
+  "validated_by": "gabrielazambrano",
+  "validators_run": [
+    "DefaultPrimValidator",
+    "MetadataValidator",
+    "KindValidator",
+    "MaterialValidator",
+    "UpAxisValidator"
+  ],
+  "errors": [],
+  "warnings": [
+    "Found 1788 Mesh prim(s) but no Material prims \u2014 materials may be in a separate layer or not yet assigned"
+  ],
+  "fixes": [
+    "Metadata field 'asset_name' set to 'MyKitchen'",
+    "Metadata field 'version' set to 'v002'",
+    "upAxis changed from 'Z' to 'Y'"
+  ],
+  "success": true
+}

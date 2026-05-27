@@ -115,6 +115,12 @@ class USDPublisherPanel(QtWidgets.QWidget):
         info.setStyleSheet("color: #666666; font-size: 11px;")
         layout.addWidget(info)
 
+        #####
+        header.setContentsMargins(0, 0, 0, 0)
+        info.setContentsMargins(0, 0, 0, 0)
+        header.setFixedHeight(18)
+        info.setFixedHeight(16)
+
         layout.addWidget(self._divider())
 
         # Scroll area for validators
@@ -128,6 +134,10 @@ class USDPublisherPanel(QtWidgets.QWidget):
 
         scroll_widget = QtWidgets.QWidget()
         self._config_form_layout = QtWidgets.QVBoxLayout(scroll_widget)
+        self._config_form_layout.setSpacing(4)
+
+        #####
+        self._config_form_layout.setContentsMargins(0, 0, 0, 0)
         self._config_form_layout.setSpacing(4)
 
         scroll.setWidget(scroll_widget)
@@ -243,6 +253,43 @@ class USDPublisherPanel(QtWidgets.QWidget):
                 axis_combo.setCurrentText(validator_cfg.get("expected_axis", "Y"))
                 group_layout.addRow("Expected Axis:", axis_combo)
                 widgets["expected_axis"] = axis_combo
+
+            # naming_style — dropdown
+            if "naming_style" in validator_cfg:
+                naming_combo = QtWidgets.QComboBox()
+                naming_combo.setStyleSheet("""
+                    QComboBox {
+                        background-color: #3c3c3c;
+                        border: 1px solid #555555;
+                        border-radius: 3px;
+                        padding: 6px;
+                        color: #ffffff;
+                    }
+                """)
+                naming_combo.addItems(["any", "CamelCase", "snake_case"])
+                naming_combo.setCurrentText(validator_cfg.get("naming_style", "any"))
+                group_layout.addRow("Naming Style:", naming_combo)
+                widgets["naming_style"] = naming_combo
+
+            # allow_* boolean flags
+            for flag_key, label in [
+                ("allow_leading_underscore", "Allow Leading Underscore:"),
+                ("allow_trailing_underscore", "Allow Trailing Underscore:"),
+                ("allow_double_underscore", "Allow Double Underscore:"),
+            ]:
+                if flag_key in validator_cfg:
+                    cb = QtWidgets.QCheckBox()
+                    cb.setChecked(validator_cfg.get(flag_key, False))
+                    group_layout.addRow(label, cb)
+                    widgets[flag_key] = cb
+
+            # reserved_names — comma separated line edit
+            if "reserved_names" in validator_cfg:
+                reserved_input = QtWidgets.QLineEdit()
+                reserved_input.setText(", ".join(validator_cfg["reserved_names"]))
+                reserved_input.setPlaceholderText("e.g. default, root")
+                group_layout.addRow("Reserved Names:", reserved_input)
+                widgets["reserved_names"] = reserved_input
 
             # Variant set — editable values + add new set button
             if "required_sets" in validator_cfg:
@@ -399,19 +446,39 @@ class USDPublisherPanel(QtWidgets.QWidget):
             if "expected_axis" in widgets:
                 cfg["expected_axis"] = widgets["expected_axis"].currentText()
 
-            # required_sets
-            for key, widget in widgets.items():
-                if key.startswith("required_sets."):
-                    set_name = key.split(".", 1)[1]
-                    raw = widget.text()
-                    if "required_sets" not in cfg:
-                        cfg["required_sets"] = {}
-                    cfg["required_sets"][set_name] = [
-                        v.strip() for v in raw.split(",") if v.strip()
-                    ]
-                # skip internal helper keys
-                elif key.startswith("_"):
-                    continue
+            # naming_style
+            if "naming_style" in widgets:
+                cfg["naming_style"] = widgets["naming_style"].currentText()
+
+            # allow_* boolean flags
+            for flag_key in [
+                "allow_leading_underscore",
+                "allow_trailing_underscore",
+                "allow_double_underscore",
+            ]:
+                if flag_key in widgets:
+                    cfg[flag_key] = widgets[flag_key].isChecked()
+
+            # reserved_names
+            if "reserved_names" in widgets:
+                raw = widgets["reserved_names"].text()
+                cfg["reserved_names"] = [
+                    r.strip() for r in raw.split(",") if r.strip()
+                ]
+
+            # required_sets (only for validators that use them)
+            if "required_sets" in cfg:
+
+                new_required_sets = {}
+
+                for key, widget in widgets.items():
+                    if key.startswith("required_sets."):
+                        set_name = key.split(".", 1)[1]
+                        raw = widget.text()
+                        values = [v.strip() for v in raw.split(",") if v.strip()]
+                        new_required_sets[set_name] = values
+
+                cfg["required_sets"] = new_required_sets
 
             validators[validator_name] = cfg
 
@@ -578,14 +645,25 @@ class USDPublisherPanel(QtWidgets.QWidget):
         self.validate_results = self._build_results_area()
         layout.addWidget(self.validate_results)
 
-        # Open in Houdini button — only useful inside Houdini
-        self.open_in_houdini_btn = QtWidgets.QPushButton("Open Fixed File in Houdini")
-        self.open_in_houdini_btn.setStyleSheet(
+        # Open in Houdini buttons — only useful inside Houdini
+        houdini_btn_layout = QtWidgets.QHBoxLayout()
+        self.open_as_sublayer_btn = QtWidgets.QPushButton("Open as Sublayer")
+        self.open_as_sublayer_btn.setStyleSheet(
             "QPushButton { background-color: #4a4a4a; border-color: #666666; }"
         )
-        self.open_in_houdini_btn.clicked.connect(self._on_open_in_houdini)
-        self.open_in_houdini_btn.setEnabled(False)  # enabled after successful validate
-        layout.addWidget(self.open_in_houdini_btn)
+        self.open_as_sublayer_btn.clicked.connect(self._on_open_as_sublayer)
+        self.open_as_sublayer_btn.setEnabled(False)
+        houdini_btn_layout.addWidget(self.open_as_sublayer_btn)
+
+        self.open_as_reference_btn = QtWidgets.QPushButton("Open as Reference")
+        self.open_as_reference_btn.setStyleSheet(
+            "QPushButton { background-color: #4a4a4a; border-color: #666666; }"
+        )
+        self.open_as_reference_btn.clicked.connect(self._on_open_as_reference)
+        self.open_as_reference_btn.setEnabled(False)
+        houdini_btn_layout.addWidget(self.open_as_reference_btn)
+
+        layout.addLayout(houdini_btn_layout)
 
         layout.addStretch()
         return widget
@@ -611,7 +689,13 @@ class USDPublisherPanel(QtWidgets.QWidget):
         line.setStyleSheet("color: #444444;")
         return line
 
-    def _on_open_in_houdini(self):
+    def _on_open_as_sublayer(self):
+        self._open_in_houdini(mode="sublayer")
+
+    def _on_open_as_reference(self):
+        self._open_in_houdini(mode="reference")
+
+    def _open_in_houdini(self, mode: str):
         file_path = self.validate_file_input.text().strip()
         if not file_path:
             return
@@ -623,13 +707,18 @@ class USDPublisherPanel(QtWidgets.QWidget):
             if stage is None:
                 stage = hou.node("/").createNode("lopnet", "stage")
 
-            sublayer = stage.createNode("sublayer", "imported_usd")
-            sublayer.parm("filepath1").set(file_path)
-            sublayer.setDisplayFlag(True)
+            if mode == "sublayer":
+                node = stage.createNode("sublayer", "imported_usd")
+                node.parm("filepath1").set(file_path)
+            else:
+                node = stage.createNode("reference", "imported_usd")
+                node.parm("filepath1").set(file_path)
+
+            node.setDisplayFlag(True)
 
             self._show_success(
                 self.validate_results,
-                f"Imported into /stage/imported_usd"
+                f"Imported into /stage/imported_usd as {mode}"
             )
 
         except ImportError:
@@ -639,8 +728,7 @@ class USDPublisherPanel(QtWidgets.QWidget):
             )
         except Exception as e:
             self._show_error(self.validate_results, f"Could not import: {e}")
-
-    # --- Publish tab actions ---
+    # Publish tab actions
 
     def _on_dry_run(self):
         self._run(dry_run=True)
@@ -729,7 +817,7 @@ class USDPublisherPanel(QtWidgets.QWidget):
             self.history_table.setItem(row, 3, warning_item)
         self.history_table.resizeColumnsToContents()
 
-    # --- Validate tab actions ---
+    # Validate tab actions
 
     def _on_browse_validate_file(self):
         path, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -828,10 +916,14 @@ class USDPublisherPanel(QtWidgets.QWidget):
 
         if not errors:
             html.append('<p style="color:#40916c; font-weight:bold;">✓ VALID</p>')
-            self.open_in_houdini_btn.setEnabled(True)
+            enabled = not bool(errors)
+            self.open_as_sublayer_btn.setEnabled(enabled)
+            self.open_as_reference_btn.setEnabled(enabled)
         else:
             html.append('<p style="color:#e63946; font-weight:bold;">✗ INVALID</p>')
-            self.open_in_houdini_btn.setEnabled(False)
+            enabled = not bool(errors)
+            self.open_as_sublayer_btn.setEnabled(enabled)
+            self.open_as_reference_btn.setEnabled(enabled)
 
         for f in fixes:
             html.append(f'<p style="color:#48cae4;">FIXED &nbsp; {f}</p>')
@@ -846,7 +938,7 @@ class USDPublisherPanel(QtWidgets.QWidget):
             )
 
         self.validate_results.setHtml("".join(html))
-    # --- Shared helpers ---
+    # Shared helpers
 
     def _show_result(self, results_widget, result, dry_run: bool):
         html = []

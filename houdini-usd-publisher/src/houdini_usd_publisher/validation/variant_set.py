@@ -5,7 +5,13 @@ from houdini_usd_publisher.core.config import PublishConfig
 
 
 class VariantSetValidator(BaseValidator):
+    """
+    Validates required variant sets on the USD root prim.
 
+    Ensures that production-defined variant sets and their expected values
+    exist on the asset, supporting consistent asset configuration and
+    downstream selection workflows.
+    """
     def __init__(self, config: PublishConfig):
         self.config = config
         validator_cfg = config.get_validator_config("VariantSetValidator")

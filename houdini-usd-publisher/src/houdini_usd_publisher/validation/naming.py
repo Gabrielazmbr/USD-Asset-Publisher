@@ -4,39 +4,31 @@ from pxr import Usd
 from houdini_usd_publisher.validation.base import BaseValidator
 from houdini_usd_publisher.core.config import PublishConfig
 
-# Pre-compiled patterns
-CAMEL_CASE_RE = re.compile(r'^[A-Z][a-zA-Z0-9]*(_[0-9]+)?$')
-SNAKE_CASE_RE = re.compile(r'^[a-z][a-z0-9]*(_[a-z0-9]+)*(_[0-9]+)?$')
-VALID_CHARS_RE = re.compile(r'^[a-zA-Z0-9_]+$')
-STARTS_WITH_LETTER_RE = re.compile(r'^[a-zA-Z_]')
+CAMEL_CASE_RE = re.compile(r'^[A-Z][a-zA-Z0-9]*$')
+SNAKE_CASE_RE = re.compile(r'^[a-z][a-z0-9]*(_[a-z0-9]+)*$')
 
 
 class NamingConventionValidator(BaseValidator):
     """
-    Validates prim names follow the configured naming convention.
+    Validates prim names in the root layer only (skips referenced/instanced content).
 
-    Configurable rules:
-    - allow_spaces: whether spaces are permitted in prim names
-    - allow_special_chars: whether special characters are permitted
-    - must_start_with_letter: whether names must start with a letter
-    - naming_style: 'CamelCase', 'snake_case', or 'any'
-    - instance_suffix_pattern: regex for instance numbering e.g. '_[0-9]+'
+    Errors (block publish):
+    - Prim name matches a reserved word
+
+    Warnings (allow with feedback):
+    - Naming style violation (CamelCase or snake_case)
+    - Leading underscore
+    - Trailing underscore
+    - Double underscore
     """
 
     def __init__(self, config: PublishConfig):
         cfg = config.get_validator_config("NamingConventionValidator")
-        self.allow_spaces = cfg.get("allow_spaces", False)
-        self.allow_special_chars = cfg.get("allow_special_chars", False)
-        self.must_start_with_letter = cfg.get("must_start_with_letter", True)
         self.naming_style = cfg.get("naming_style", "any")
-        self.instance_suffix_pattern = cfg.get("instance_suffix_pattern", None)
-
-        # Compile instance suffix pattern if provided
-        self._instance_re = (
-            re.compile(self.instance_suffix_pattern)
-            if self.instance_suffix_pattern
-            else None
-        )
+        self.allow_leading_underscore = cfg.get("allow_leading_underscore", False)
+        self.allow_trailing_underscore = cfg.get("allow_trailing_underscore", False)
+        self.allow_double_underscore = cfg.get("allow_double_underscore", False)
+        self.reserved_names = cfg.get("reserved_names", ["default", "root"])
 
     def validate(self, usd_file: Path) -> tuple[list[str], list[str]]:
         errors = []
@@ -47,33 +39,60 @@ class NamingConventionValidator(BaseValidator):
             errors.append("Could not open USD stage")
             return errors, warnings
 
+        root_layer = stage.GetRootLayer()
+
         for prim in stage.Traverse():
+            # Skip prims that didn't originate in the root layer
+            if not prim.GetPrimStack():
+                continue
+            if prim.GetPrimStack()[0].layer.identifier != root_layer.identifier:
+                continue
+            # Skip instance prototypes
+            if prim.IsInPrototype():
+                continue
+
             name = prim.GetName()
-            prim_errors = self._check_name(name, prim.GetPath())
+            prim_errors, prim_warnings = self._check_name(name, prim.GetPath())
             errors.extend(prim_errors)
+            warnings.extend(prim_warnings)
 
         return errors, warnings
 
-    def _check_name(self, name: str, path) -> list[str]:
-        issues = []
+    def _check_name(self, name: str, path) -> tuple[list[str], list[str]]:
+        errors = []
+        warnings = []
 
-        # Special characters — USD allows some we may not want
-        if not self.allow_special_chars and not VALID_CHARS_RE.match(name):
-            issues.append(
-                f"Prim '{path}' contains special characters in name '{name}'"
+        # Errors
+
+        if name.lower() in [r.lower() for r in self.reserved_names]:
+            errors.append(
+                f"Prim '{path}' uses reserved name '{name}'"
             )
-            return issues
 
-        # Naming style
-        if self.naming_style == "CamelCase":
-            if not CAMEL_CASE_RE.match(name):
-                issues.append(
-                    f"Prim '{path}' name '{name}' does not follow CamelCase convention"
-                )
-        elif self.naming_style == "snake_case":
-            if not SNAKE_CASE_RE.match(name):
-                issues.append(
-                    f"Prim '{path}' name '{name}' does not follow snake_case convention"
-                )
+        # Warnings
 
-        return issues
+        if not self.allow_leading_underscore and name.startswith("_"):
+            warnings.append(
+                f"Prim '{path}' name '{name}' starts with an underscore"
+            )
+
+        if not self.allow_trailing_underscore and name.endswith("_"):
+            warnings.append(
+                f"Prim '{path}' name '{name}' ends with an underscore"
+            )
+
+        if not self.allow_double_underscore and "__" in name:
+            warnings.append(
+                f"Prim '{path}' name '{name}' contains double underscore"
+            )
+
+        if self.naming_style == "CamelCase" and not CAMEL_CASE_RE.match(name):
+            warnings.append(
+                f"Prim '{path}' name '{name}' does not follow CamelCase convention"
+            )
+        elif self.naming_style == "snake_case" and not SNAKE_CASE_RE.match(name):
+            warnings.append(
+                f"Prim '{path}' name '{name}' does not follow snake_case convention"
+            )
+
+        return errors, warnings

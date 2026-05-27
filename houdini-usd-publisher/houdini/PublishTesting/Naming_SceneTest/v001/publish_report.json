@@ -1,0 +1,14 @@
+{
+  "asset_name": "Naming_SceneTest",
+  "version": "v001",
+  "published_at": "2026-05-18T10:45:35.038756+00:00",
+  "published_by": "gabrielazambrano",
+  "published_path": "/Users/gabrielazambrano/Desktop/MSC_CAVE/SEMESTER_02/PIPELINE_TD/FINAL_PROJECT/pipelineproject-Gabrielazmbr/houdini-usd-publisher/houdini/PublishTesting/Naming_SceneTest/v001/asset.usda",
+  "validators_run": [
+    "NamingConventionValidator"
+  ],
+  "warnings": [],
+  "fixes": [],
+  "registry_recorded": true,
+  "success": true
+}

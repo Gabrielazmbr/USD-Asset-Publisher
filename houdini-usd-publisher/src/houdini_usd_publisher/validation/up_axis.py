@@ -5,6 +5,12 @@ from houdini_usd_publisher.core.config import PublishConfig
 
 
 class UpAxisValidator(BaseValidator):
+    """
+    Validates that the USD stage uses the expected up-axis convention.
+
+    Ensures consistent scene orientation across assets (e.g. Y-up or Z-up)
+    to prevent transform and import issues in downstream applications.
+    """
 
     def __init__(self, config: PublishConfig):
         validator_cfg = config.get_validator_config("UpAxisValidator")

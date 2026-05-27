@@ -1,0 +1,17 @@
+{
+  "asset_name": "Metadata_SceneTest",
+  "version": "v001",
+  "published_at": "2026-05-17T19:43:49.511974+00:00",
+  "published_by": "gabrielazambrano",
+  "published_path": "/Users/gabrielazambrano/Desktop/MSC_CAVE/SEMESTER_02/PIPELINE_TD/FINAL_PROJECT/pipelineproject-Gabrielazmbr/houdini-usd-publisher/houdini/PublishTesting/Metadata_SceneTest/v001/asset.usda",
+  "validators_run": [
+    "MetadataValidator"
+  ],
+  "warnings": [],
+  "fixes": [
+    "Metadata field 'asset_name' set to 'Metadata_SceneTest'",
+    "Metadata field 'version' set to 'v001'"
+  ],
+  "registry_recorded": true,
+  "success": true
+}

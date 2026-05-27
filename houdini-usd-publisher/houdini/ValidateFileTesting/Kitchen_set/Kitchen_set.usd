@@ -1,13 +1,13 @@
 #usda 1.0
 (
     defaultPrim = "Kitchen_set"
-    upAxis = "Z"
+    upAxis = "Y"
 )
 
 def Xform "Kitchen_set" (
     customData = {
         string asset_name = "MyKitchen"
-        string version = "v001"
+        string version = "v002"
     }
     kind = "assembly"
 )

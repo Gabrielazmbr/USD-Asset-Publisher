@@ -1,0 +1,19 @@
+{
+  "asset_name": "Material_SceneTest",
+  "version": "v002",
+  "published_at": "2026-05-17T21:11:05.846609+00:00",
+  "published_by": "gabrielazambrano",
+  "published_path": "/Users/gabrielazambrano/Desktop/MSC_CAVE/SEMESTER_02/PIPELINE_TD/FINAL_PROJECT/pipelineproject-Gabrielazmbr/houdini-usd-publisher/houdini/PublishTesting/Material_SceneTest/v002/asset.usda",
+  "validators_run": [
+    "DefaultPrimValidator",
+    "MaterialValidator"
+  ],
+  "warnings": [
+    "Found 2 Mesh prim(s) but no Material prims \u2014 materials may be in a separate layer or not yet assigned"
+  ],
+  "fixes": [
+    "defaultPrim set to 'ASSET'"
+  ],
+  "registry_recorded": true,
+  "success": true
+}

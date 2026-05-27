@@ -1,0 +1,17 @@
+{
+  "asset_name": "VariantSet_SceneTest",
+  "version": "v001",
+  "published_at": "2026-05-17T20:56:44.319564+00:00",
+  "published_by": "gabrielazambrano",
+  "published_path": "/Users/gabrielazambrano/Desktop/MSC_CAVE/SEMESTER_02/PIPELINE_TD/FINAL_PROJECT/pipelineproject-Gabrielazmbr/houdini-usd-publisher/houdini/PublishTesting/VariantSet_SceneTest/v001/asset.usda",
+  "validators_run": [
+    "DefaultPrimValidator",
+    "VariantSetValidator"
+  ],
+  "warnings": [],
+  "fixes": [
+    "defaultPrim set to 'ASSET'"
+  ],
+  "registry_recorded": true,
+  "success": true
+}

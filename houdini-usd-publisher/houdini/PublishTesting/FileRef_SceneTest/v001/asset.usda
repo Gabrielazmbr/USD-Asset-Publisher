@@ -1,0 +1,14 @@
+#usda 1.0
+(
+    defaultPrim = "asset_demo"
+    endTimeCode = 1001
+    framesPerSecond = 24
+    metersPerUnit = 1
+    startTimeCode = 1001
+    subLayers = [
+        @/Users/gabrielazambrano/Desktop/MSC_CAVE/SEMESTER_02/PIPELINE_TD/FINAL_PROJECT/HOUDINI_USD_FILES/backup/usd/ExampleProject_bak5/assets/asset_demo/asset_demo.usda:SDF_FORMAT_ARGS:format=usda@
+    ]
+    timeCodesPerSecond = 24
+    upAxis = "Y"
+)
+

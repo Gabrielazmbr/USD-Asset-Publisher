@@ -19,23 +19,12 @@
     "VariantSetValidator": {
       "enabled": false,
       "required_sets": {
-        "lod": [
-          "low",
-          "mid",
-          "high"
-        ],
-        "shading": [
-          "base",
-          "damaged"
-        ],
         "geo": [
-          "proxy render"
-        ],
-        "Geometry": [
-          "Pig"
-        ],
-        "Material": [
-          "copper"
+          "pig",
+          "toy",
+          "squab",
+          "tommy",
+          "capy"
         ]
       }
     },
@@ -56,9 +45,14 @@
     },
     "NamingConventionValidator": {
       "enabled": false,
-      "allow_special_chars": false,
-      "naming_style": "any",
-      "instance_suffix_pattern": "_[0-9]+"
+      "naming_style": "snake_case",
+      "allow_leading_underscore": false,
+      "allow_trailing_underscore": false,
+      "allow_double_underscore": false,
+      "reserved_names": [
+        "default",
+        "root"
+      ]
     }
   }
 }

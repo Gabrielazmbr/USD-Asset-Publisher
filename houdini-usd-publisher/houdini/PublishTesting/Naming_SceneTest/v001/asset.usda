@@ -1,0 +1,335 @@
+#usda 1.0
+(
+    defaultPrim = "geo"
+    endTimeCode = 1001
+    framesPerSecond = 24
+    metersPerUnit = 1
+    startTimeCode = 1001
+    timeCodesPerSecond = 24
+    upAxis = "Y"
+)
+
+def Xform "geo" (
+    customData = {
+        string project = "myproject"
+    }
+    kind = "group"
+)
+{
+    def Scope "sphere_geo"
+    {
+        def Sphere "sphere" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-1, -1, -1), (1, 1, 1)]
+            rel material:binding = </materials/sphere>
+            double radius = 1
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 1.137798398733139, 0, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+        }
+    }
+
+    def Xform "ground" (
+        kind = "component"
+    )
+    {
+        matrix4d xformOp:transform:xform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform:xform"]
+
+        def Mesh "mesh_0" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-5, 0, -5), (5, 0, 5)]
+            int[] faceVertexCounts = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+            int[] faceVertexIndices = [0, 1, 11, 10, 1, 2, 12, 11, 2, 3, 13, 12, 3, 4, 14, 13, 4, 5, 15, 14, 5, 6, 16, 15, 6, 7, 17, 16, 7, 8, 18, 17, 8, 9, 19, 18, 10, 11, 21, 20, 11, 12, 22, 21, 12, 13, 23, 22, 13, 14, 24, 23, 14, 15, 25, 24, 15, 16, 26, 25, 16, 17, 27, 26, 17, 18, 28, 27, 18, 19, 29, 28, 20, 21, 31, 30, 21, 22, 32, 31, 22, 23, 33, 32, 23, 24, 34, 33, 24, 25, 35, 34, 25, 26, 36, 35, 26, 27, 37, 36, 27, 28, 38, 37, 28, 29, 39, 38, 30, 31, 41, 40, 31, 32, 42, 41, 32, 33, 43, 42, 33, 34, 44, 43, 34, 35, 45, 44, 35, 36, 46, 45, 36, 37, 47, 46, 37, 38, 48, 47, 38, 39, 49, 48, 40, 41, 51, 50, 41, 42, 52, 51, 42, 43, 53, 52, 43, 44, 54, 53, 44, 45, 55, 54, 45, 46, 56, 55, 46, 47, 57, 56, 47, 48, 58, 57, 48, 49, 59, 58, 50, 51, 61, 60, 51, 52, 62, 61, 52, 53, 63, 62, 53, 54, 64, 63, 54, 55, 65, 64, 55, 56, 66, 65, 56, 57, 67, 66, 57, 58, 68, 67, 58, 59, 69, 68, 60, 61, 71, 70, 61, 62, 72, 71, 62, 63, 73, 72, 63, 64, 74, 73, 64, 65, 75, 74, 65, 66, 76, 75, 66, 67, 77, 76, 67, 68, 78, 77, 68, 69, 79, 78, 70, 71, 81, 80, 71, 72, 82, 81, 72, 73, 83, 82, 73, 74, 84, 83, 74, 75, 85, 84, 75, 76, 86, 85, 76, 77, 87, 86, 77, 78, 88, 87, 78, 79, 89, 88, 80, 81, 91, 90, 81, 82, 92, 91, 82, 83, 93, 92, 83, 84, 94, 93, 84, 85, 95, 94, 85, 86, 96, 95, 86, 87, 97, 96, 87, 88, 98, 97, 88, 89, 99, 98]
+            rel material:binding = </materials/ground>
+            uniform token orientation = "leftHanded"
+            point3f[] points = [(-5, 0, -5), (-3.8888888, 0, -5), (-2.7777777, 0, -5), (-1.6666665, 0, -5), (-0.55555534, 0, -5), (0.5555558, 0, -5), (1.666667, 0, -5), (2.7777781, 0, -5), (3.8888893, 0, -5), (5, 0, -5), (-5, 0, -3.8888888), (-3.8888888, 0, -3.8888888), (-2.7777777, 0, -3.8888888), (-1.6666665, 0, -3.8888888), (-0.55555534, 0, -3.8888888), (0.5555558, 0, -3.8888888), (1.666667, 0, -3.8888888), (2.7777781, 0, -3.8888888), (3.8888893, 0, -3.8888888), (5, 0, -3.8888888), (-5, 0, -2.7777777), (-3.8888888, 0, -2.7777777), (-2.7777777, 0, -2.7777777), (-1.6666665, 0, -2.7777777), (-0.55555534, 0, -2.7777777), (0.5555558, 0, -2.7777777), (1.666667, 0, -2.7777777), (2.7777781, 0, -2.7777777), (3.8888893, 0, -2.7777777), (5, 0, -2.7777777), (-5, 0, -1.6666665), (-3.8888888, 0, -1.6666665), (-2.7777777, 0, -1.6666665), (-1.6666665, 0, -1.6666665), (-0.55555534, 0, -1.6666665), (0.5555558, 0, -1.6666665), (1.666667, 0, -1.6666665), (2.7777781, 0, -1.6666665), (3.8888893, 0, -1.6666665), (5, 0, -1.6666665), (-5, 0, -0.55555534), (-3.8888888, 0, -0.55555534), (-2.7777777, 0, -0.55555534), (-1.6666665, 0, -0.55555534), (-0.55555534, 0, -0.55555534), (0.5555558, 0, -0.55555534), (1.666667, 0, -0.55555534), (2.7777781, 0, -0.55555534), (3.8888893, 0, -0.55555534), (5, 0, -0.55555534), (-5, 0, 0.5555558), (-3.8888888, 0, 0.5555558), (-2.7777777, 0, 0.5555558), (-1.6666665, 0, 0.5555558), (-0.55555534, 0, 0.5555558), (0.5555558, 0, 0.5555558), (1.666667, 0, 0.5555558), (2.7777781, 0, 0.5555558), (3.8888893, 0, 0.5555558), (5, 0, 0.5555558), (-5, 0, 1.666667), (-3.8888888, 0, 1.666667), (-2.7777777, 0, 1.666667), (-1.6666665, 0, 1.666667), (-0.55555534, 0, 1.666667), (0.5555558, 0, 1.666667), (1.666667, 0, 1.666667), (2.7777781, 0, 1.666667), (3.8888893, 0, 1.666667), (5, 0, 1.666667), (-5, 0, 2.7777781), (-3.8888888, 0, 2.7777781), (-2.7777777, 0, 2.7777781), (-1.6666665, 0, 2.7777781), (-0.55555534, 0, 2.7777781), (0.5555558, 0, 2.7777781), (1.666667, 0, 2.7777781), (2.7777781, 0, 2.7777781), (3.8888893, 0, 2.7777781), (5, 0, 2.7777781), (-5, 0, 3.8888893), (-3.8888888, 0, 3.8888893), (-2.7777777, 0, 3.8888893), (-1.6666665, 0, 3.8888893), (-0.55555534, 0, 3.8888893), (0.5555558, 0, 3.8888893), (1.666667, 0, 3.8888893), (2.7777781, 0, 3.8888893), (3.8888893, 0, 3.8888893), (5, 0, 3.8888893), (-5, 0, 5), (-3.8888888, 0, 5), (-2.7777777, 0, 5), (-1.6666665, 0, 5), (-0.55555534, 0, 5), (0.5555558, 0, 5), (1.666667, 0, 5), (2.7777781, 0, 5), (3.8888893, 0, 5), (5, 0, 5)] (
+                interpolation = "vertex"
+            )
+            uniform token subdivisionScheme = "none"
+        }
+    }
+}
+
+def Scope "materials"
+{
+    def Material "sphere"
+    {
+        token outputs:vex:displacement.connect = </materials/sphere/sphere_displace.outputs:displacement>
+        token outputs:vex:surface.connect = </materials/sphere/sphere_surface.outputs:surface>
+
+        def Shader "sphere_surface"
+        {
+            uniform token info:implementationSource = "sourceCode"
+            uniform string info:sourceCode = '''#ifndef VOP_SHADING
+#define VOP_SHADING
+#endif
+#ifndef VOP_SURFACE
+#define VOP_SURFACE
+#endif
+
+
+// Definition of struct type: ShaderLayer
+#include <shaderlayer.h>
+
+import principledshader__2_0;
+surface
+stage_scene_02_materiallibrary5_sphere()
+{
+    vector\t_basecolor = { 0.5989999771118164, 0, 0 };
+    float\t_rough = 0.48;
+    float\t_metallic = 1;
+    float\t_coat = 2;
+    float\t_sheen = 10;
+    ShaderLayer\tlayer = {};
+    vector\t_tmp_Cf = Cf;
+    vector\t_tmp_Of = Of;
+    float\t_tmp_Af = Af;
+    vector\t_tmp_N = N;
+    bsdf\t_tmp_F = bsdf();
+    principledshader__2_0("basecolor", _basecolor, "rough", _rough, "metallic", _metallic, "coat", _coat, "sheen", _sheen, "layer", layer, "Cf", _tmp_Cf, "Of", _tmp_Of, "Af", _tmp_Af, "N", _tmp_N, "F", _tmp_F);
+    Cf = _tmp_Cf;
+    Of = _tmp_Of;
+    Af = _tmp_Af;
+    N = _tmp_N;
+    F = _tmp_F;
+}
+'''
+            token outputs:surface
+        }
+
+        def Shader "sphere_displace"
+        {
+            uniform token info:implementationSource = "sourceCode"
+            uniform string info:sourceCode = '''#ifndef VOP_SHADING
+#define VOP_SHADING
+#endif
+#ifndef VOP_DISPLACE
+#define VOP_DISPLACE
+#endif
+
+
+// Definition of struct type: ShaderLayer
+#include <shaderlayer.h>
+
+import principledshader__2_0;
+displace
+stage_scene_02_materiallibrary5_sphere()
+{
+    float\t_dispTex_scale = 1;
+    ShaderLayer\tlayer = {};
+    vector\t_tmp_P = P;
+    vector\t_tmp_N = N;
+    principledshader__2_0("dispTex_scale", _dispTex_scale, "layer", layer, "P", _tmp_P, "N", _tmp_N);
+    P = _tmp_P;
+    N = _tmp_N;
+}
+'''
+            token outputs:displacement
+        }
+    }
+
+    def Material "ground"
+    {
+        token outputs:vex:displacement.connect = </materials/ground/ground_displace.outputs:displacement>
+        token outputs:vex:surface.connect = </materials/ground/ground_surface.outputs:surface>
+
+        def Shader "ground_surface"
+        {
+            uniform token info:implementationSource = "sourceCode"
+            uniform string info:sourceCode = '''#ifndef VOP_SHADING
+#define VOP_SHADING
+#endif
+#ifndef VOP_SURFACE
+#define VOP_SURFACE
+#endif
+
+
+// Definition of struct type: ShaderLayer
+#include <shaderlayer.h>
+
+import principledshader__2_0;
+surface
+stage_scene_02_materiallibrary5_ground()
+{
+    vector\t_basecolor = { 0.7350000143051147, 0.7350000143051147, 0.7350000143051147 };
+    float\t_rough = 1;
+    ShaderLayer\tlayer = {};
+    vector\t_tmp_Cf = Cf;
+    vector\t_tmp_Of = Of;
+    float\t_tmp_Af = Af;
+    vector\t_tmp_N = N;
+    bsdf\t_tmp_F = bsdf();
+    principledshader__2_0("basecolor", _basecolor, "rough", _rough, "layer", layer, "Cf", _tmp_Cf, "Of", _tmp_Of, "Af", _tmp_Af, "N", _tmp_N, "F", _tmp_F);
+    Cf = _tmp_Cf;
+    Of = _tmp_Of;
+    Af = _tmp_Af;
+    N = _tmp_N;
+    F = _tmp_F;
+}
+'''
+            token outputs:surface
+        }
+
+        def Shader "ground_displace"
+        {
+            uniform token info:implementationSource = "sourceCode"
+            uniform string info:sourceCode = '''#ifndef VOP_SHADING
+#define VOP_SHADING
+#endif
+#ifndef VOP_DISPLACE
+#define VOP_DISPLACE
+#endif
+
+
+// Definition of struct type: ShaderLayer
+#include <shaderlayer.h>
+
+import principledshader__2_0;
+displace
+stage_scene_02_materiallibrary5_ground()
+{
+    float\t_dispTex_scale = 1;
+    ShaderLayer\tlayer = {};
+    vector\t_tmp_P = P;
+    vector\t_tmp_N = N;
+    principledshader__2_0("dispTex_scale", _dispTex_scale, "layer", layer, "P", _tmp_P, "N", _tmp_N);
+    P = _tmp_P;
+    N = _tmp_N;
+}
+'''
+            token outputs:displacement
+        }
+    }
+}
+
+def Xform "cameras"
+{
+    def Camera "basic_camera" (
+        prepend apiSchemas = ["HoudiniViewportGuideAPI", "HoudiniCameraPlateAPI"]
+    )
+    {
+        float2 clippingRange = (0.1, 1000000)
+        float exposure = 0
+        float focalLength = 0.85
+        float focusDistance = 33.38
+        float fStop = 0.1
+        float horizontalAperture = 0.20955
+        float horizontalApertureOffset = 0
+        asset houdini:backgroundimage = @@
+        asset houdini:foregroundimage = @@
+        float houdini:guidescale = 1
+        bool houdini:inviewermenu = 1
+        token projection = "perspective"
+        double shutter:close = 0.25
+        double shutter:open = -0.25
+        float verticalAperture = 0.11787187
+        float verticalApertureOffset = 0
+        matrix4d xformOp:transform = ( (0.7077214805610186, 5.689798853854108e-17, -0.7064915469788154, 0), (-0.35083667596273543, 0.8679852058464005, -0.351447448747605, 0), (0.613224210833149, 0.49659005470486606, 0.614291774986675, 0), (21.007298911937486, 18.111747957092543, 21.043870591405792, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+    }
+}
+
+def Xform "lights"
+{
+    def DomeLight "hdri" (
+        prepend apiSchemas = ["HoudiniViewportGuideAPI", "KarmaLightAPI"]
+    )
+    {
+        custom rel filters = None
+        float houdini:guidescale = 1
+        bool houdini:inviewermenu = 0
+        color3f inputs:color = (1, 1, 1)
+        float inputs:diffuse = 1
+        bool inputs:enableColorTemperature = 0
+        float inputs:exposure = -1.5
+        float inputs:intensity = 1
+        bool inputs:normalize = 0
+        float inputs:specular = 1
+        asset inputs:texture:file = @houdini/pic/hdri/HDRIHaven_skylit_garage_2k.rat@
+        token inputs:texture:format = "automatic"
+        custom float karma:light:samplingquality = 3
+        rel light:filters = None
+        rel portals = None
+        matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+    }
+
+    def RectLight "key_light" (
+        prepend apiSchemas = ["HoudiniViewportGuideAPI", "KarmaLightAPI", "HoudiniViewportLightAPI"]
+    )
+    {
+        float2 houdini:clippingRange = (0.001, 10000)
+        bool houdini:inviewermenu = 1
+        color3f inputs:color = (1, 1, 1)
+        float inputs:diffuse = 1
+        bool inputs:enableColorTemperature = 0
+        float inputs:exposure = 2.89
+        float inputs:height = 2
+        float inputs:intensity = 1
+        bool inputs:normalize = 0
+        float inputs:specular = 1
+        asset inputs:texture:file = @@
+        float inputs:width = 2
+        custom float karma:light:samplingquality = 3
+        rel light:filters = None
+        matrix4d xformOp:transform = ( (-0.86180621485817, 1.1148194336890483e-8, -0.5072376642480655, 0), (-0.17281976344853806, 0.9401692775734354, 0.29362400935317917, 0), (0.4768892716275181, 0.3407076892396829, -0.8102437245048744, 0), (2.4566240319971406, 2.111181944390901, -4.145613633564207, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+    }
+
+    def RectLight "top_light" (
+        prepend apiSchemas = ["HoudiniViewportGuideAPI", "KarmaLightAPI", "HoudiniViewportLightAPI"]
+    )
+    {
+        float2 houdini:clippingRange = (0.001, 10000)
+        bool houdini:inviewermenu = 1
+        color3f inputs:color = (1, 1, 1)
+        float inputs:diffuse = 1
+        bool inputs:enableColorTemperature = 0
+        float inputs:exposure = 3
+        float inputs:height = 4
+        float inputs:intensity = 1
+        bool inputs:normalize = 0
+        float inputs:specular = 1
+        asset inputs:texture:file = @@
+        float inputs:width = 4
+        custom float karma:light:samplingquality = 3
+        rel light:filters = None
+        matrix4d xformOp:transform = ( (0.9999649068078481, -2.1752714920616623e-8, 0.008377657952608393, 0), (0.0075803404926791575, 0.4257793729100312, -0.9047952608421176, 0), (-0.0035670142677629683, 0.9048270141879828, 0.42576443111757645, 0), (-0.12391397128338469, 16.37652528654558, 7.421835977018151, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+    }
+
+    def DiskLight "back_spot" (
+        prepend apiSchemas = ["HoudiniViewportGuideAPI", "ShapingAPI", "HoudiniLightBarnDoorAPI", "KarmaLightAPI", "HoudiniViewportLightAPI"]
+    )
+    {
+        float barndoorbottom = 0
+        float barndoorbottomedge = 0
+        float barndoorleft = 0
+        float barndoorleftedge = 0
+        float barndoorright = 0
+        float barndoorrightedge = 0
+        float barndoortop = 0
+        float barndoortopedge = 0
+        float2 houdini:clippingRange = (0.001, 10000)
+        bool houdini:inviewermenu = 1
+        color3f inputs:color = (1, 1, 1)
+        float inputs:diffuse = 1
+        bool inputs:enableColorTemperature = 0
+        float inputs:exposure = 3.76
+        float inputs:intensity = 1
+        bool inputs:normalize = 0
+        float inputs:radius = 1
+        float inputs:shaping:cone:angle = 90
+        float inputs:shaping:cone:softness = 0
+        float inputs:specular = 1
+        custom float karma:light:samplingquality = 3
+        rel light:filters = None
+        matrix4d xformOp:transform = ( (0.9351446221770339, -0.016068952310075206, 0.3539015744314075, 0), (0.07270013354865767, 0.9864144222668942, -0.1473135368045866, 0), (-0.3467264428845598, 0.16348815344093126, 0.9236083571996817, 0), (-4.352102420530542, 2.7265674541988063, 11.553000918431781, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+    }
+}
+

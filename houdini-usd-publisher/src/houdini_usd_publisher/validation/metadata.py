@@ -5,6 +5,12 @@ from houdini_usd_publisher.core.config import PublishConfig
 
 
 class MetadataValidator(BaseValidator):
+    """
+    Validates required custom metadata on the USD root prim.
+
+    Ensures that key production fields (e.g. asset name, version)
+    are present, and can optionally auto-fill missing values.
+    """
 
     def __init__(self, config: PublishConfig):
         self.config = config

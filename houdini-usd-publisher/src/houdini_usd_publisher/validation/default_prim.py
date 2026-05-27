@@ -4,6 +4,12 @@ from houdini_usd_publisher.validation.base import BaseValidator
 
 
 class DefaultPrimValidator(BaseValidator):
+    """
+    Ensures the USD stage has a valid defaultPrim.
+
+    The defaultPrim defines the root entry point of an asset for references.
+    If missing, the validator can assign the first root prim as a fallback.
+    """
 
     def validate(self, usd_file: Path) -> tuple[list[str], list[str]]:
         errors = []

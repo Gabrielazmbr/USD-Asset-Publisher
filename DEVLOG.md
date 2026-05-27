@@ -166,7 +166,12 @@ uv run python install.py
 
 ---
 
-## Next Steps:
+## Stage #7.0
 
-1. Further Testing, validation improvements.
-2. Proper Documentation and README.
+**Validation Refinements, UI Improvements, Real Scene Testing, and Documentation**
+
+1. Reworked the naming convention validation system and expanded its flexibility inside the UI panel. Users can now define naming styles more precisely, including support for underscore rules, configurable naming patterns, and reserved keyword detection.
+2. Fixed and improved the FileReferenceValidator to handle edge cases more reliably, especially around resolved paths and dependency detection in USD composition workflows.
+3. Updated the validation panel in the file import workflow, allowing users to import USD files either as references or sublayers.
+4. Performed extensive testing using real production-like Houdini USD scenes from the SideFX Solaris Authoring learning path. Each validator was tested individually across different scenarios, and a full validation breakdown video was created and added to the project media folder for demonstration purposes.
+5. Continued improving documentation and README clarity, ensuring the installation process, pipeline usage, and tool structure are easier to understand and follow for new users.

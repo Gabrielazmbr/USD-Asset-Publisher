@@ -1,0 +1,16 @@
+{
+  "asset_name": "DefaultPrim_SceneTest",
+  "version": "v001",
+  "published_at": "2026-05-17T19:32:06.108726+00:00",
+  "published_by": "gabrielazambrano",
+  "published_path": "/Users/gabrielazambrano/Desktop/MSC_CAVE/SEMESTER_02/PIPELINE_TD/FINAL_PROJECT/pipelineproject-Gabrielazmbr/houdini-usd-publisher/houdini/PublishTesting/DefaultPrim_SceneTest/v001/asset.usda",
+  "validators_run": [
+    "DefaultPrimValidator"
+  ],
+  "warnings": [],
+  "fixes": [
+    "defaultPrim set to 'sphere1'"
+  ],
+  "registry_recorded": true,
+  "success": true
+}
